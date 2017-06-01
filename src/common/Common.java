@@ -79,6 +79,19 @@ public class Common {
 		case "getPrcdntSearchInfo":
 			final_url.add(endpoint + prcdnt_search_path + function + "?ServiceKey=" + service_key + "&numOfRows=45000");
 			break;
+
+		case "getPblctLtrtreSearchInfo":
+			final_url.add(endpoint + prcdnt_search_path + function + "?ServiceKey=" + service_key + "&numOfRows=900");
+			break;
+
+		case "getPblctLtrtreDetailInfo":
+			for (int i = 0; i < id.size(); i++) {
+				final_url.add(endpoint + prcdnt_search_path + function + "?ServiceKey=" + service_key + "&bookInfoSeq="
+						+ id.get(i));
+			}
+			break;
+		case "getOcprOutlineSearchInfo":
+			final_url.add(endpoint + prcdnt_search_path + function + "?ServiceKey=" + service_key + "&numOfRows=7000");
 		default:
 
 			break;
@@ -108,7 +121,7 @@ public class Common {
 
 			HttpURLConnection httpConnection = (HttpURLConnection) urlc;
 			int responseCode = httpConnection.getResponseCode();
-
+			System.out.println("responseCode : " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -119,15 +132,18 @@ public class Common {
 
 					System.out.println("item_size :::::::::::::::: " + doc.getElementsByTagName("item").getLength());
 
-					String document = toString(doc);
-					document = document.replaceAll("bookList", "item");
-					// System.out.println(document);
-
-					DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-					InputSource is = new InputSource();
-					is.setCharacterStream(new StringReader(document));
-
-					doc = db.parse(is);
+					/**
+					 * getPblctLtrtrePdicalInfo 실행할 때 주석 해제.
+					 */
+//					String document = toString(doc);
+//					document = document.replaceAll("bookList", "item");
+//					// System.out.println(document);
+//
+//					DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+//					InputSource is = new InputSource();
+//					is.setCharacterStream(new StringReader(document));
+//
+//					doc = db.parse(is);
 
 					System.out.println("item_size :::::::::::::::: " + doc.getElementsByTagName("item").getLength());
 					int length = doc.getElementsByTagName("item").getLength();
@@ -167,6 +183,18 @@ public class Common {
 							case "getPrcdntSearchInfo":
 								getPrcdntSearchInfoTag(eElement);
 								break;
+
+							case "getPblctLtrtreSearchInfo":
+								getPblctLtrtreSearchInfoTag(eElement);
+								break;
+
+							case "getPblctLtrtreDetailInfo":
+								String book_seq_id = url_list.get(a).split("bookInfoSeq")[1];
+								getPblctLtrtreDetailInfoTag(book_seq_id, eElement);
+								break;
+							case "getOcprOutlineSearchInfo":
+								getOcprOutlineSearchInfoTag(eElement);
+								break;
 							default:
 								System.out.println("stop");
 								break;
@@ -193,6 +221,33 @@ public class Common {
 	/**
 	 * csv Export를 위한 value 값 셋팅하는 method.
 	 */
+
+	public static void getOcprOutlineSearchInfoTag(Element eElement) {
+		// TODO Auto-generated method stub
+		Export_csv.map_set(getTagValue("prcdntNo", eElement), getTagValue("title", eElement),
+				getTagValue("cntntpth", eElement), getTagValue("regDate", eElement), getTagValue("chgDate", eElement));
+	}
+
+	public static void getPblctLtrtreDetailInfoTag(String book_seq_id, Element eElement) {
+		// TODO Auto-generated method stub
+		Export_csv.map_set(book_seq_id, getTagValue("xmlContent", eElement), getTagValue("bookInfoSeq", eElement),
+				getTagValue("bookReporter", eElement), getTagValue("title", eElement),
+				getTagValue("bookSection", eElement), getTagValue("volumnInfo", eElement),
+				getTagValue("seriesInfo", eElement), getTagValue("publisher", eElement),
+				getTagValue("pressDate", eElement), getTagValue("startPage", eElement),
+				getTagValue("apiRegDate", eElement), getTagValue("apiChgDate", eElement));
+	}
+
+	public static void getPblctLtrtreSearchInfoTag(Element eElement) {
+		// TODO Auto-generated method stub
+		Export_csv.map_set(getTagValue("bookInfoSeq", eElement), getTagValue("title", eElement),
+				getTagValue("bookSection", eElement), getTagValue("volumnInfo", eElement),
+				getTagValue("seriesInfo", eElement), getTagValue("pageInfo", eElement),
+				getTagValue("publisher", eElement), getTagValue("bookReporter", eElement),
+				getTagValue("pressDate", eElement), getTagValue("apiRegDate", eElement),
+				getTagValue("apiChgDate", eElement));
+	}
+
 	public static void getPrcdntSearchInfoTag(Element eElement) {
 		Export_csv.map_set(getTagValue("eventNum", eElement), getTagValue("eventNo", eElement),
 				getTagValue("eventNm", eElement), getTagValue("engEventNo", eElement),
@@ -264,7 +319,7 @@ public class Common {
 			nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 
 			for (int index = 0; index < nlList.getLength(); index++) {
-				
+
 				// CDATA 값 파싱하기 위한 구문
 				if (nlList.item(index) instanceof CharacterData) {
 					CharacterData child = (CharacterData) nlList.item(index);
@@ -283,6 +338,7 @@ public class Common {
 
 	/**
 	 * doc -> String으로 변환하는 메소드
+	 * 
 	 * @param doc
 	 * @return
 	 */

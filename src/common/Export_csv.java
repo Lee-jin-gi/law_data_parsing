@@ -91,6 +91,43 @@ public class Export_csv {
 			hmap.put(12, "apiRegDate");
 			hmap.put(13, "apiChgDate");
 			break;
+			
+		case "getPblctLtrtreSearchInfo":
+			hmap.put(0, "bookInfoSeq");
+			hmap.put(1, "title");
+			hmap.put(2, "bookSection");
+			hmap.put(3, "volumnInfo");
+			hmap.put(4, "seriesInfo");
+			hmap.put(5, "pageInfo");
+			hmap.put(6, "publisher");
+			hmap.put(7, "bookReporter");
+			hmap.put(8, "pressDate");
+			hmap.put(9, "apiRegDate");
+			hmap.put(10, "apiChgDate");
+			break;
+			
+		case "getPblctLtrtreDetailInfo":
+			hmap.put(0, "book_seq_id");
+			hmap.put(1, "xmlContent");
+			hmap.put(2, "bookInfoSeq");
+			hmap.put(3, "bookReporter");
+			hmap.put(4, "title");
+			hmap.put(5, "bookSection");
+			hmap.put(6, "volumnInfo");
+			hmap.put(7, "seriesInfo");
+			hmap.put(8, "publisher");
+			hmap.put(9, "pressDate");
+			hmap.put(10, "startPage");
+			hmap.put(11, "apiRegDate");
+			hmap.put(12, "apiChgDate");
+			break;
+		case "getOcprOutlineSearchInfo":
+			hmap.put(0, "prcdntNo");
+			hmap.put(1, "title");
+			hmap.put(2, "cntntpth");
+			hmap.put(3, "regDate");
+			hmap.put(4, "chgDate");
+			break;
 		default:
 			break;
 		}
